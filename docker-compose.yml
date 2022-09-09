@@ -7,23 +7,23 @@ services:
     ports:
       - 5432:5432
     env_file:
-      - backend/.env
+      - polis-backend/.env
     volumes:
       - polis-postgres:/var/lib/postgresql/data
 
   polis-server:
     container_name: polis-server
-    build: ./backend
+    build: ./polis-backend
     ports:
       - 5000:5000
     depends_on:
       - polis-postgres
     env_file:
-      - backend/.env
+      - polis-backend/.env
     
   polis-app:
     container_name: polis-app
-    build: ./frontend
+    build: ./polis-frontend
     volumes:
       - polis-app-build:/var/www/html
 
