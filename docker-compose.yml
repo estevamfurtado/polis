@@ -1,0 +1,44 @@
+services:
+
+  polis-postgres:
+    image: postgres:13
+    container_name: polis-postgres
+    restart: always
+    ports:
+      - 5432:5432
+    env_file:
+      - backend/.env
+    volumes:
+      - polis-postgres:/var/lib/postgresql/data
+
+  polis-server:
+    container_name: polis-server
+    build: ./backend
+    ports:
+      - 5000:5000
+    depends_on:
+      - polis-postgres
+    env_file:
+      - backend/.env
+    
+  polis-app:
+    container_name: polis-app
+    build: ./frontend
+    volumes:
+      - polis-app-build:/var/www/html
+
+  polis-nginx:
+    container_name: polis-nginx
+    build: ./nginx
+    ports:
+      - 80:80
+    volumes:
+      - polis-app-build:/var/www/html
+    depends_on:
+      - polis-postgres
+      - polis-server
+      - polis-app
+
+volumes:
+  polis-postgres:
+  polis-app-build:
